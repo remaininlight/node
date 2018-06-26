@@ -172,7 +172,7 @@ if defined noprojgen goto msbuild
 
 @rem Generate the VS project.
 echo configure %configure_flags% --dest-cpu=%target_arch% --tag=%TAG%
-python configure %configure_flags% --dest-cpu=%target_arch% --tag=%TAG%
+call python configure %configure_flags% --dest-cpu=%target_arch% --tag=%TAG%
 if errorlevel 1 goto create-msvs-files-failed
 if not exist node.sln goto create-msvs-files-failed
 echo Project files generated.
@@ -307,6 +307,7 @@ echo Failed to build node-weak.
 goto exit
 
 :build-addons
+echo Build addons
 if not defined build_addons goto run-tests
 if not exist "%node_exe%" (
   echo Failed to find node.exe
@@ -338,7 +339,7 @@ if "%config%"=="Release" set test_args=--mode=release %test_args%
 echo running 'cctest %cctest_args%'
 "%config%\cctest" %cctest_args%
 echo running 'python tools\test.py %test_args%'
-python tools\test.py %test_args%
+call python tools\test.py %test_args%
 goto jslint
 
 :jslint
@@ -386,7 +387,7 @@ set NODE_VERSION=
 set TAG=
 set FULLVERSION=
 
-for /F "usebackq tokens=*" %%i in (`python "%~dp0tools\getnodeversion.py"`) do set NODE_VERSION=%%i
+for /F "usebackq tokens=*" %%i in (`call python "%~dp0tools\getnodeversion.py"`) do set NODE_VERSION=%%i
 if not defined NODE_VERSION (
   echo Cannot determine current version of Node.js
   exit /b 1
@@ -423,6 +424,7 @@ if not "%DISTTYPE%"=="custom" (
 )
 set FULLVERSION=%NODE_VERSION%-%TAG%
 
+echo "End"
 :exit
 if not defined DISTTYPEDIR set DISTTYPEDIR=%DISTTYPE%
 goto :EOF
