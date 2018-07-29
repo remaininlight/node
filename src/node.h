@@ -214,6 +214,8 @@ NODE_EXTERN void Init(int* argc,
                       int* exec_argc,
                       const char*** exec_argv);
 
+NODE_EXTERN void HackStartTracingAgent();
+
 class ArrayBufferAllocator;
 
 NODE_EXTERN ArrayBufferAllocator* CreateArrayBufferAllocator();

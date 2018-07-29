@@ -3540,6 +3540,23 @@ Local<Context> NewContext(Isolate* isolate,
   return context;
 }
 
+static std::unique_ptr<tracing::Agent> tracing_agent_;
+inline void HackStartTracingAgent() {
+
+    /*
+    tracing_agent_.reset(new tracing::Agent(trace_file_pattern));
+    auto controller = tracing_agent_->GetTracingController();
+    tracing::TraceEventHelper::SetTracingController(controller);
+    printf("HackStartTracingAgent");
+    */
+    //tracing_agent_->Enable(trace_enabled_categories);
+    node::tracing::TraceEventHelper::SetTracingController(
+          new v8::TracingController());
+    //StartTracingAgent();
+
+    //node::tracing::TraceEventHelper::SetTracingController(
+    //      new v8::TracingController());
+}
 
 inline int Start(Isolate* isolate, IsolateData* isolate_data,
                  int argc, const char* const* argv,
@@ -3588,6 +3605,8 @@ inline int Start(Isolate* isolate, IsolateData* isolate_data,
     env.performance_state()->Mark(
         node::performance::NODE_PERFORMANCE_MILESTONE_LOOP_START);
     do {
+
+			OutputDebugString("In Node lib. Calling uv_run\n");
       uv_run(env.event_loop(), UV_RUN_DEFAULT);
 
       v8_platform.DrainVMTasks(isolate);
@@ -3700,6 +3719,8 @@ inline int Start(uv_loop_t* event_loop,
 }
 
 int Start(int argc, char** argv) {
+
+  return 15;
   atexit([] () { uv_tty_reset_mode(); });
   PlatformInit();
   performance::performance_node_start = PERFORMANCE_NOW();
