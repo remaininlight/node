@@ -214,8 +214,6 @@ NODE_EXTERN void Init(int* argc,
                       int* exec_argc,
                       const char*** exec_argv);
 
-NODE_EXTERN void HackStartTracingAgent();
-
 class ArrayBufferAllocator;
 
 NODE_EXTERN ArrayBufferAllocator* CreateArrayBufferAllocator();
@@ -239,6 +237,10 @@ class MultiIsolatePlatform : public v8::Platform {
                                struct uv_loop_s* loop) = 0;
   virtual void UnregisterIsolate(IsolateData* isolate_data) = 0;
 };
+
+NODE_EXTERN MultiIsolatePlatform* HackCreatePlatform();
+
+NODE_EXTERN void HackStartTracingAgent();
 
 // Creates a new isolate with Node.js-specific settings.
 NODE_EXTERN v8::Isolate* NewIsolate(ArrayBufferAllocator* allocator);

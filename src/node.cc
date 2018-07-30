@@ -3540,18 +3540,27 @@ Local<Context> NewContext(Isolate* isolate,
   return context;
 }
 
-static std::unique_ptr<tracing::Agent> tracing_agent_;
-inline void HackStartTracingAgent() {
+inline node::MultiIsolatePlatform* HackCreatePlatform() {
 
+    node::tracing::TraceEventHelper::SetTracingController(
+      new v8::TracingController());
+
+    return new NodePlatform(4, node::tracing::TraceEventHelper::GetTracingController());
+    //return new NodePlatform(4, nullptr);
+    //return CreatePlatform(4, nullptr);
+}
+
+//static std::unique_ptr<tracing::Agent> tracing_agent_;
+inline void HackStartTracingAgent() {
     /*
     tracing_agent_.reset(new tracing::Agent(trace_file_pattern));
     auto controller = tracing_agent_->GetTracingController();
     tracing::TraceEventHelper::SetTracingController(controller);
     printf("HackStartTracingAgent");
-    */
     //tracing_agent_->Enable(trace_enabled_categories);
     node::tracing::TraceEventHelper::SetTracingController(
           new v8::TracingController());
+    */
     //StartTracingAgent();
 
     //node::tracing::TraceEventHelper::SetTracingController(
